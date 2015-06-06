@@ -2,14 +2,14 @@
 	"translatorID": "a1a97ad4-493a-45f2-bd46-016069de4162",
 	"label": "Optical Society of America",
 	"creator": "Michael Berkowitz, Eli Osherovich, and Sebastian Karcher",
-	"target": "^https?://[^.]+\\.(opticsinfobase|osa)\\.org",
+	"target": "^https?://[^.]+\\.(osapublishing|osa)\\.org",
 	"minVersion": "1.0.0b4.r1",
 	"maxVersion": "",
 	"priority": 100,
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gbv",
-	"lastUpdated": "2013-12-13 13:27:23"
+	"lastUpdated": "2015-06-06 16:32:06"
 }
 
 /*
@@ -38,7 +38,7 @@ function detectWeb(doc, url) {
 		return;
 	};
 	
-	if (url.indexOf("search2.cfm") != -1) {
+	if (url.indexOf("search.cfm") != -1) {
 		return "multiple";
 	} else if (url.indexOf("abstract.cfm") != -1) {
 		return getArticleType(doc, url, null);
@@ -49,12 +49,12 @@ function doWeb(doc, url) {
 	var articles = new Array();
 	if (detectWeb(doc, url) == "multiple") {
 		var items = new Object();
-		var xpath = '//div[@id="section-article_info"]';
+		var xpath = '//div[@class="sri-summary"]';
 		var rows = doc.evaluate(xpath, doc, null, XPathResult.ANY_TYPE, null);
 		var row;
 		while (row = rows.iterateNext()) {
-			var title = Zotero.Utilities.trimInternal(doc.evaluate('.//label', row, null, XPathResult.ANY_TYPE, null).iterateNext().textContent);
-			var id = doc.evaluate('.//li[@class="article-link-abstract"]/a', row, null, XPathResult.ANY_TYPE, null).iterateNext().href;
+			var title = Zotero.Utilities.trimInternal(doc.evaluate('.//h3[@class="sri-title"]', row, null, XPathResult.ANY_TYPE, null).iterateNext().textContent);
+			var id = doc.evaluate('.//h3[@class="sri-title"]/a', row, null, XPathResult.ANY_TYPE, null).iterateNext().href;
 			//	items[next_art.href] = Zotero.Utilities.trimInternal(next_art.textContent);
 			items[id] = title;
 
@@ -90,10 +90,9 @@ function scrape(newDoc) {
 	Zotero.debug(abstractblock);
 	var identifierblock = ZU.xpathText(newDoc, '//meta[@name="dc.identifier"]/@content');
 	Zotero.Utilities.HTTP.doGet(osalink, function (text) {
-		var action = text.match(/select\s+name=\"([^"]+)\"/)[1];
 		var id = text.match(/input\s+type=\"hidden\"\s+name=\"articles\"\s+value=\"([^"]+)\"/)[1];
 		var get = 'http://' + host + '/custom_tags/IB_Download_Citations.cfm';
-		var post = 'articles=' + id + '&ArticleAction=save_endnote2&' + action + '=save_endnote2';
+		var post = 'articles=' + id + '&ArticleAction=export_endnote&';
 		Zotero.Utilities.HTTP.doPost(get, post, function (text) {
 							Z.debug(text)
 			var translator = Zotero.loadTranslator("import");
@@ -159,7 +158,7 @@ function scrape(newDoc) {
  */
 
 function getArticleType(doc, url, nsResolver) {
-	if (url.indexOf("search2.cfm") != -1) {
+	if (url.indexOf("search.cfm") != -1) {
 		Zotero.debug("Type: multiple");
 		return "multiple";
 	}
@@ -168,7 +167,7 @@ function getArticleType(doc, url, nsResolver) {
 	var journal = ZU.xpathText(doc, '//meta[@name="citation_journal_title"]/@content');
 	//Zotero.debug(journal);
 	if (conference && conference.indexOf(" ") != -1) return "conferencePaper";
-	else if (journal && journal.indexOf(" ") != -1) return "journalArticle";
+	else if (journal) return "journalArticle";
 	else return "book";
 
 }
@@ -177,29 +176,34 @@ function getArticleType(doc, url, nsResolver) {
 var testCases = [
 	{
 		"type": "web",
-		"url": "http://www.opticsinfobase.org/josaa/abstract.cfm?URI=josaa-16-1-191",
+		"url": "http://www.osapublishing.org/josaa/abstract.cfm?URI=josaa-16-1-191",
 		"items": [
 			{
 				"itemType": "journalArticle",
+				"title": "Lens axicons: systems composed of a diverging aberrated lens and a converging aberrated lens",
 				"creators": [
 					{
 						"lastName": "Jaroszewicz",
-						"firstName": "Zbigniew ",
+						"firstName": "Zbigniew",
 						"creatorType": "author"
 					},
 					{
 						"lastName": "Morales",
-						"firstName": "Javier ",
+						"firstName": "Javier",
 						"creatorType": "author"
 					}
 				],
-				"notes": [],
-				"tags": [
-					"Diffraction",
-					"Lens system design",
-					"Propagation"
-				],
-				"seeAlso": [],
+				"date": "January 1, 1999",
+				"DOI": "10.1364/JOSAA.16.000191",
+				"abstractNote": "This paper is a continuation of our previous publication on the stationary-phase-method analysis of lens axicons [J. Opt. Soc. Am. A152383 (1998)]. Systems with spherical aberration up to the fifth order are studied. Such lens axicons in their simplest versions can be made either as a setup composed of two separated third-order spherical-aberration lenses of opposite powers or as a doublet consisting of one third-order diverging element and one fifth-order converging element. The axial intensity distribution and the central core width turn out to be improved and become almost constant. The results obtained are compared with the numerical evaluation of the corresponding diffraction integral.",
+				"issue": "1",
+				"journalAbbreviation": "J. Opt. Soc. Am. A",
+				"libraryCatalog": "Optical Society of America",
+				"pages": "191-197",
+				"publicationTitle": "Journal of the Optical Society of America A",
+				"shortTitle": "Lens axicons",
+				"url": "http://josaa.osa.org/abstract.cfm?URI=josaa-16-1-191",
+				"volume": "16",
 				"attachments": [
 					{
 						"title": "J. Opt. Soc. Am. A Snapshot",
@@ -210,32 +214,29 @@ var testCases = [
 						"mimeType": "application/pdf"
 					}
 				],
-				"abstractNote": "This paper is a continuation of our previous publication on the stationary-phase-method analysis of lens axicons [J. Opt. Soc. Am. A 15 2383 (1998)]. Systems with spherical aberration up to the fifth order are studied. Such lens axicons in their simplest versions can be made either as a setup composed of two separated third-order spherical-aberration lenses of opposite powers or as a doublet consisting of one third-order diverging element and one fifth-order converging element. The axial intensity distribution and the central core width turn out to be improved and become almost constant. The results obtained are compared with the numerical evaluation of the corresponding diffraction integral.",
-				"journalAbbreviation": "J. Opt. Soc. Am. A",
-				"issue": "1",
-				"url": "http://josaa.osa.org/abstract.cfm?URI=josaa-16-1-191",
-				"DOI": "10.1364/JOSAA.16.000191",
-				"libraryCatalog": "Optical Society of America",
-				"shortTitle": "Lens axicons",
-				"title": "Lens axicons: systems composed of a diverging aberrated lens and a converging aberrated lens",
-				"date": "January 1, 1999",
-				"publicationTitle": "Journal of the Optical Society of America A",
-				"volume": "16",
-				"pages": "191-197"
+				"tags": [
+					"Diffraction",
+					"Lens system design",
+					"Propagation"
+				],
+				"notes": [],
+				"seeAlso": []
 			}
 		]
 	},
 	{
 		"type": "web",
-		"url": "http://www.opticsinfobase.org/search2.cfm?reissue=J&journalList=&fullrecord=test&basicsearch=Go",
-		"items": "multiple"
+		"url": "http://www.osapublishing.org/search.cfm?q=test&meta=1&full=1&cj=1&cc=0",
+		"items": "multiple",
+		"defer": true
 	},
 	{
 		"type": "web",
-		"url": "http://www.opticsinfobase.org/abstract.cfm?URI=OFC-2006-JThB89",
+		"url": "http://www.osapublishing.org/abstract.cfm?URI=OFC-2006-JThB89",
 		"items": [
 			{
 				"itemType": "conferencePaper",
+				"title": "Challenges in Testing Resilient Packet Ring",
 				"creators": [
 					{
 						"lastName": "Chathnath",
@@ -243,11 +244,15 @@ var testCases = [
 						"creatorType": "author"
 					}
 				],
-				"notes": [],
-				"tags": [
-					"Other topics of general interest"
-				],
-				"seeAlso": [],
+				"date": "March 5, 2006",
+				"abstractNote": "Resilient packet ring ( IEEE 802.17) is a metropolitan area network technology for data transfer based on ring configuration.The paper provides guidelines for generation of recommends simulated environments for RPR testing ,discusses ways to test complex areas of RPR( e.g Fairness),provides guidelines for generating standard compliant test suite, and puts forward a strategy for automation of RPR testing.This paper is based on development of a RPR solution based on a Network processor.RPR specifies 39 state machines which implement the functionalities Topology Discovery, Protection, Datapath, OAM, Fairness and Shapers. The specification of the functionalities as well as the interaction between them makes RPR a complex protocol to validate. Lack of RPR test generator and inter dependency of control plane on data plane adds to the challenges of RPR testing. Careful planning, execution of testing in phases, building simulators and identifying the areas of challenges will guarantee success.Table of Contents Test Suite generationSimulators for RPR testingTest Sets for RPR testingTesting of RPR areasAutomation possibilities Test Suite generation Protocol Implementation Conformance Statements (PICs) provide a guidelines but it falls short of complete testing if you want to achieve the 'carrier grade' performance of the RPR. The test suite generation demands complete knowledge of the RPR Standard (IEEE 802.17, 802.17a, 802.17b).Simulators for RPR testing Simulator testing is a crucial part of RPR validation. Two types of simulators are recommended. Control plane simulator and the dataplane simulator The control plane functionality can be tested by building a stand alone simulator which can act as a frame work to exchange packets between the control plane instances.Pipeline integration stage is the integration of different modules of the packet processing modules. Pipeline integration testing is performed in the simulated environment with all the data path components treated as one single block. The packet headers are created and injected to the Receiver block and the packets from the pipeline are captured and analyzed at the transmit block. Most of the Network Processor development workbenches (e.g. transactor of IXP) support packet generators. More than 60% of the test cases can be executed in the pipeline integration stage using packet streams generated.Test Sets for RPR testingNo single test set has features required for RPR testing .The paper compares the capabilities of various test sets including Agilent and Ixia and proposes a combination of test sets for achieving RPR test coverage.Testing of RPR areasThe paper suggests methods to validate the following areas of RPR[1] 255 node testing [2] Fairness and Shaper testing [3] 50 milliseconds protection switch time[4] Testing of strict order frames [5] Jitter measurement [6] Performance monitoring testing[7] RPR-RPR BridgingSpatially Aware Sublayer (IEEE802.17b) introduces new challenge for validation of RPR. The paper discusses the complexities involved for validation of IEEE 802.17b.Automation possibilitiesThe paper discusses the areas of automation for RPR testing and methods for the same. RPR test automation can be achieved for the pipeline integration stage, On board integration and system testing phases",
+				"conferenceName": "Optical Fiber Communication Conference and Exposition and The National Fiber Optic Engineers Conference",
+				"libraryCatalog": "Optical Society of America",
+				"pages": "JThB89",
+				"proceedingsTitle": "Optical Fiber Communication Conference and Exposition and The National Fiber Optic Engineers Conference",
+				"publisher": "Optical Society of America",
+				"series": "Technical Digest (CD)",
+				"url": "http://www.osapublishing.org/abstract.cfm?URI=OFC-2006-JThB89",
 				"attachments": [
 					{
 						"title": "OFC Snapshot",
@@ -258,27 +263,21 @@ var testCases = [
 						"mimeType": "application/pdf"
 					}
 				],
-				"title": "Challenges in Testing Resilient Packet Ring",
-				"abstractNote": "Resilient packet ring ( IEEE 802.17) is a metropolitan area network technology for data transfer based on ring configuration.The paper provides guidelines for generation of recommends simulated environments for RPR testing ,discusses ways to test complex areas of RPR( e.g Fairness),provides guidelines for generating standard compliant test suite, and puts forward a strategy for automation of RPR testing.This paper is based on development of a RPR solution based on a Network processor.RPR specifies 39 state machines which implement the functionalities Topology Discovery, Protection, Datapath, OAM, Fairness and Shapers. The specification of the functionalities as well as the interaction between them makes RPR a complex protocol to validate. Lack of RPR test generator and inter dependency of control plane on data plane adds to the challenges of RPR testing. Careful planning, execution of testing in phases, building simulators and identifying the areas of challenges will guarantee success.Table of Contents Test Suite generationSimulators for RPR testingTest Sets for RPR testingTesting of RPR areasAutomation possibilities Test Suite generation Protocol Implementation Conformance Statements (PICs) provide a guidelines but it falls short of complete testing if you want to achieve the 'carrier grade' performance of the RPR. The test suite generation demands complete knowledge of the RPR Standard (IEEE 802.17, 802.17a, 802.17b).Simulators for RPR testing Simulator testing is a crucial part of RPR validation. Two types of simulators are recommended. Control plane simulator and the dataplane simulator The control plane functionality can be tested by building a stand alone simulator which can act as a frame work to exchange packets between the control plane instances.Pipeline integration stage is the integration of different modules of the packet processing modules. Pipeline integration testing is performed in the simulated environment with all the data path components treated as one single block. The packet headers are created and injected to the Receiver block and the packets from the pipeline are captured and analyzed at the transmit block. Most of the Network Processor development workbenches (e.g. transactor of IXP) support packet generators. More than 60% of the test cases can be executed in the pipeline integration stage using packet streams generated.Test Sets for RPR testingNo single test set has features required for RPR testing .The paper compares the capabilities of various test sets including Agilent and Ixia and proposes a combination of test sets for achieving RPR test coverage.Testing of RPR areasThe paper suggests methods to validate the following areas of RPR[1] 255 node testing [2] Fairness and Shaper testing [3] 50 milliseconds protection switch time[4] Testing of strict order frames [5] Jitter measurement [6] Performance monitoring testing[7] RPR-RPR BridgingSpatially Aware Sublayer (IEEE802.17b) introduces new challenge for validation of RPR. The paper discusses the complexities involved for validation of IEEE 802.17b.Automation possibilitiesThe paper discusses the areas of automation for RPR testing and methods for the same. RPR test automation can be achieved for the pipeline integration stage, On board integration and system testing phases",
-				"publisher": "Optical Society of America",
-				"date": "March 5, 2006",
-				"conferenceName": "Optical Fiber Communication Conference and Exposition and The National Fiber Optic Engineers Conference",
-				"publicationTitle": "Optical Fiber Communication Conference and Exposition and The National Fiber Optic Engineers Conference",
-				"journalAbbreviation": "OFC",
-				"series": "Technical Digest (CD)",
-				"pages": "JThB89",
-				"url": "http://www.opticsinfobase.org/abstract.cfm?URI=OFC-2006-JThB89",
-				"libraryCatalog": "Optical Society of America",
-				"accessDate": "CURRENT_TIMESTAMP"
+				"tags": [
+					"Other topics of general interest"
+				],
+				"notes": [],
+				"seeAlso": []
 			}
 		]
 	},
 	{
 		"type": "web",
-		"url": "http://www.opticsinfobase.org/ao/abstract.cfm?URI=ao-31-26-5706",
+		"url": "http://www.osapublishing.org/ao/abstract.cfm?URI=ao-31-26-5706",
 		"items": [
 			{
 				"itemType": "journalArticle",
+				"title": "Optimized kinoform structures for highly efficient fan-out elements",
 				"creators": [
 					{
 						"lastName": "Prongué",
@@ -301,9 +300,16 @@ var testCases = [
 						"creatorType": "author"
 					}
 				],
-				"notes": [],
-				"tags": [],
-				"seeAlso": [],
+				"date": "September 10, 1992",
+				"DOI": "10.1364/AO.31.005706",
+				"abstractNote": "We discuss the realization of highly efficient fan-out elements. Laser-beam writing lithography is available now for fabricating smooth surface relief microstructures. We develop several methods for optimizing microstructure profiles. Only a small number of parameters in the object plane are necessary for determining the kinoform. This simplifies the calculation of M × N arrays also for large M and N. Experimental results for a 9-beam fan-out element are presented.",
+				"issue": "26",
+				"journalAbbreviation": "Appl. Opt.",
+				"libraryCatalog": "Optical Society of America",
+				"pages": "5706-5711",
+				"publicationTitle": "Applied Optics",
+				"url": "http://ao.osa.org/abstract.cfm?URI=ao-31-26-5706",
+				"volume": "31",
 				"attachments": [
 					{
 						"title": "Appl. Opt. Snapshot",
@@ -314,19 +320,127 @@ var testCases = [
 						"mimeType": "application/pdf"
 					}
 				],
-				"title": "Optimized kinoform structures for highly efficient fan-out elements",
-				"abstractNote": "We discuss the realization of highly efficient fan-out elements. Laser-beam writing lithography is available now for fabricating smooth surface relief microstructures. We develop several methods for optimizing microstructure profiles. Only a small number of parameters in the object plane are necessary for determining the kinoform. This simplifies the calculation of M × N arrays also for large M and N. Experimental results for a 9-beam fan-out element are presented.",
-				"publisher": "OSA",
-				"date": "September 10, 1992",
-				"publicationTitle": "Applied Optics",
-				"journalAbbreviation": "Appl. Opt.",
-				"volume": "31",
-				"issue": "26",
-				"pages": "5706-5711",
-				"url": "http://ao.osa.org/abstract.cfm?URI=ao-31-26-5706",
-				"DOI": "10.1364/AO.31.005706",
+				"tags": [],
+				"notes": [],
+				"seeAlso": []
+			}
+		]
+	},
+	{
+		"type": "web",
+		"url": "http://www.osapublishing.org/optica/abstract.cfm?URI=optica-2-6-510",
+		"items": [
+			{
+				"itemType": "journalArticle",
+				"title": "Quantum-enhanced tomography of unitary processes",
+				"creators": [
+					{
+						"lastName": "Zhou",
+						"firstName": "Xiao-Qi",
+						"creatorType": "author"
+					},
+					{
+						"lastName": "Cable",
+						"firstName": "Hugo",
+						"creatorType": "author"
+					},
+					{
+						"lastName": "Whittaker",
+						"firstName": "Rebecca",
+						"creatorType": "author"
+					},
+					{
+						"lastName": "Shadbolt",
+						"firstName": "Peter",
+						"creatorType": "author"
+					},
+					{
+						"lastName": "O’Brien",
+						"firstName": "Jeremy L.",
+						"creatorType": "author"
+					},
+					{
+						"lastName": "Matthews",
+						"firstName": "Jonathan C. F.",
+						"creatorType": "author"
+					}
+				],
+				"date": "June 20, 2015",
+				"DOI": "10.1364/OPTICA.2.000510",
+				"abstractNote": "A fundamental task in photonics is to characterize an unknown optical process, defined by properties such as birefringence, spectral response, thickness and flatness. Among many ways to achieve this, single-photon probes can be used in a method called quantum process tomography (QPT). However, the precision of QPT is limited by unavoidable shot noise when implemented using single-photon probes or laser light. In situations where measurement resources are limited, for example, where the process (sample) to be probed is very delicate such that the exposure to light has a detrimental effect on the sample, it becomes essential to overcome this precision limit. Here we devise a scheme for process tomography with a quantum-enhanced precision by drawing upon techniques from quantum metrology. We implement a proof-of-principle experiment to demonstrate this scheme—four-photon quantum states are used to probe an unknown arbitrary unitary process realized with an arbitrary polarization rotation. Our results show a substantial reduction of statistical fluctuations compared to traditional QPT methods—in the ideal case, one four-photon probe state yields the same amount of statistical information as twelve single probe photons.",
+				"issue": "6",
+				"journalAbbreviation": "Optica",
 				"libraryCatalog": "Optical Society of America",
-				"accessDate": "CURRENT_TIMESTAMP"
+				"pages": "510-516",
+				"publicationTitle": "Optica",
+				"url": "http://www.osapublishing.org/optica/abstract.cfm?URI=optica-2-6-510",
+				"volume": "2",
+				"attachments": [
+					{
+						"title": "Optica Snapshot",
+						"mimeType": "text/html"
+					},
+					{
+						"title": "Optica Full Text PDF",
+						"mimeType": "application/pdf"
+					}
+				],
+				"tags": [
+					"Metrology",
+					"Quantum information and processing"
+				],
+				"notes": [],
+				"seeAlso": []
+			}
+		]
+	},
+	{
+		"type": "web",
+		"url": "http://www.osapublishing.org/josa/abstract.cfm?uri=josa-72-1-156",
+		"items": [
+			{
+				"itemType": "journalArticle",
+				"title": "Fourier-transform method of fringe-pattern analysis for computer-based topography and interferometry",
+				"creators": [
+					{
+						"lastName": "Takeda",
+						"firstName": "Mitsuo",
+						"creatorType": "author"
+					},
+					{
+						"lastName": "Ina",
+						"firstName": "Hideki",
+						"creatorType": "author"
+					},
+					{
+						"lastName": "Kobayashi",
+						"firstName": "Seiji",
+						"creatorType": "author"
+					}
+				],
+				"date": "January 1, 1982",
+				"DOI": "10.1364/JOSA.72.000156",
+				"abstractNote": "A fast-Fourier-transform method of topography and interferometry is proposed. By computer processing of a noncontour type of fringe pattern, automatic discrimination is achieved between elevation and depression of the object or wave-front form, which has not been possible by the fringe-contour-generation techniques. The method has advantages over moire topography and conventional fringe-contour interferometry in both accuracy and sensitivity. Unlike fringe-scanning techniques, the method is easy to apply because it uses no moving components.",
+				"issue": "1",
+				"journalAbbreviation": "J. Opt. Soc. Am.",
+				"libraryCatalog": "Optical Society of America",
+				"pages": "156-160",
+				"publicationTitle": "Journal of the Optical Society of America",
+				"url": "http://www.osapublishing.org/abstract.cfm?URI=josa-72-1-156",
+				"volume": "72",
+				"attachments": [
+					{
+						"title": "J. Opt. Soc. Am. Snapshot",
+						"mimeType": "text/html"
+					},
+					{
+						"title": "J. Opt. Soc. Am. Full Text PDF",
+						"mimeType": "application/pdf"
+					}
+				],
+				"tags": [],
+				"notes": [],
+				"seeAlso": []
 			}
 		]
 	}
