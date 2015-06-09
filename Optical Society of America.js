@@ -40,7 +40,7 @@ function detectWeb(doc, url) {
 	
 	if (url.indexOf("search.cfm") != -1) {
 		return "multiple";
-	} else if (url.indexOf("abstract.cfm") != -1) {
+	} else if (url.indexOf("abstract.cfm") != -1 || url.indexOf("fulltext.cfm") != -1) {
 		return getArticleType(doc, url, null);
 	}
 }
