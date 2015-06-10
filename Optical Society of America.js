@@ -1,4 +1,4 @@
-{
+﻿{
 	"translatorID": "a1a97ad4-493a-45f2-bd46-016069de4162",
 	"label": "Optical Society of America",
 	"creator": "Michael Berkowitz, Eli Osherovich, and Sebastian Karcher",
@@ -91,7 +91,7 @@ function scrape(newDoc) {
 	var identifierblock = ZU.xpathText(newDoc, '//meta[@name="dc.identifier"]/@content');
 	Zotero.Utilities.HTTP.doGet(osalink, function (text) {
 		var id = text.match(/input\s+type=\"hidden\"\s+name=\"articles\"\s+value=\"([^"]+)\"/)[1];
-		var get = 'http://' + host + '/custom_tags/IB_Download_Citations.cfm';
+		var get = 'https://' + host + '/custom_tags/IB_Download_Citations.cfm';
 		var post = 'articles=' + id + '&ArticleAction=export_endnote&';
 		Zotero.Utilities.HTTP.doPost(get, post, function (text) {
 							Z.debug(text)
