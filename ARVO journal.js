@@ -9,7 +9,7 @@
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2019-05-17 09:18:38"
+	"lastUpdated": "2020-07-01 01:54:39"
 }
 
 /*
@@ -102,7 +102,8 @@ function scrape(newDoc, url) {
 		Z.debug(risurl);
 //		Zotero.Utilities.HTTP.doPost(get, post, function (text) {
 		Zotero.Utilities.HTTP.doGet(risurl, function (text) {
-							Z.debug(text)
+			text = text.replace(/JO\s\s-/g, 'JF  -');
+			Z.debug(text);
 			var translator = Zotero.loadTranslator("import");
 			translator.setTranslator("32d59d2d-b65a-4da4-b0a3-bdd3cfb979e7");
 			translator.setString(text);
@@ -188,15 +189,17 @@ function getArticleType(doc, url, nsResolver) {
 }
 
 
+
+
 /** BEGIN TEST CASES **/
 var testCases = [
 	{
 		"type": "web",
-		"url": "http://iovs.arvojournals.org/article.aspx?articleid=2523633",
+		"url": "https://iovs.arvojournals.org/Article.aspx?articleid=2523633",
 		"items": [
 			{
 				"itemType": "journalArticle",
-				"title": "Quantitative Analysis of Outer Retinal Tubulation in Age-Related Macular Degeneration From Spectral-Domain Optical Coherence Tomography and HistologyQuantitative Analysis of ORT",
+				"title": "Quantitative Analysis of Outer Retinal Tubulation in Age-Related Macular Degeneration From Spectral-Domain Optical Coherence Tomography and Histology",
 				"creators": [
 					{
 						"lastName": "Litts",
@@ -239,39 +242,35 @@ var testCases = [
 				"ISSN": "1552-5783",
 				"abstractNote": "Abstract  Purpose:\n     To assess outer retinal tubulation (ORT) morphology from spectral-domain optical coherence tomography (SD-OCT) volumes and donor eye histology, analyze ORT reflectivity, and estimate the number of cones surviving in ORT.   Methods:\n     In SD-OCT volumes from nine patients with advanced AMD, ORT was analyzed en face and in B-scans. The hyperreflective ORT border in cross-section was delineated and surface area calculated. Reflectivity was compared between ORT types (Closed, Open, Forming, and Branching). A flatmount retina from a donor with neovascular AMD was labeled to visualize the external limiting membrane that delimits ORT and allow measurements of cross-sectional cone area, center-to-center cone spacing, and cone density. The number of cones surviving in ORT was estimated.   Results:\n     By en face SD-OCT, ORT varies in complexity and shape. Outer retinal tubulation networks almost always contain Closed cross-sections. Spectral-domain OCT volumes containing almost exclusively Closed ORTs showed no significant direction-dependent differences in hyperreflective ORT border intensity. The surface areas of partial ORT assessed by SD-OCT volumes ranged from 0.16 to 1.76 mm2. From the flatmount retina, the average cross-sectional area of cone inner segments was 49.1 ± 7.9 μm2. The average cone spacing was 7.5 ± 0.6 μm. Outer retinal tubulation cone density was 20,351 cones/mm2. The estimated number of cones in ORT in a macula ranged from 26,399 to 186,833 cones, which is 6% to 44% of the cones present in a healthy macula.   Conclusions:\n     These first estimates for cone density and number of cones surviving in ORT suggest that ORT formation considerably distorts the photoreceptor mosaic. Results provide additional insight into the reflectivity characteristics and number of ORT cones observable in living patients by SD-OCT, as cones persist and disease progresses.",
 				"issue": "6",
-				"journalAbbreviation": "Investigative Ophthalmology & Visual Science",
+				"journalAbbreviation": "Invest. Ophthalmol. Vis. Sci.",
 				"libraryCatalog": "ARVO journal",
 				"pages": "2647-2656",
 				"publicationTitle": "Investigative Ophthalmology & Visual Science",
-				"url": "http://dx.doi.org/10.1167/iovs.16-19262",
+				"url": "https://doi.org/10.1167/iovs.16-19262",
 				"volume": "57",
 				"attachments": [
 					{
-						"title": "Investigative Ophthalmology & Visual Science Snapshot",
+						"title": "Invest. Ophthalmol. Vis. Sci. Snapshot",
 						"mimeType": "text/html"
 					},
 					{
-						"title": "Investigative Ophthalmology & Visual Science Full Text PDF",
+						"title": "Invest. Ophthalmol. Vis. Sci. Full Text PDF",
 						"mimeType": "application/pdf"
 					}
 				],
 				"tags": [],
-				"notes": [
-					{
-						"note": "<p>10.1167/iovs.16-19262</p>"
-					}
-				],
+				"notes": [],
 				"seeAlso": []
 			}
 		]
 	},
 	{
 		"type": "web",
-		"url": "http://iovs.arvojournals.org/Article.aspx?articleid=2535941",
+		"url": "https://iovs.arvojournals.org/article.aspx?articleid=2535941",
 		"items": [
 			{
 				"itemType": "journalArticle",
-				"title": "Light-Induced Thickening of Photoreceptor Outer Segment Layer Detected by Ultra-High Resolution OCT ImagingLight-Induced OCT Responses in Mouse Retina",
+				"title": "Light-Induced Thickening of Photoreceptor Outer Segment Layer Detected by Ultra-High Resolution OCT Imaging",
 				"creators": [
 					{
 						"lastName": "Li",
@@ -304,28 +303,24 @@ var testCases = [
 				"ISSN": "1552-5783",
 				"abstractNote": "Abstract  Purpose:\n     We examined if light induces changes in the retinal structure that can be observed using optical coherence tomography (OCT).   Methods:\n     Normal C57BL/6J mice (age 3–6 months) adapted to either room light (15 minutes to ∼5 hours, 50–500 lux) or darkness (overnight) were imaged using a Bioptigen UHR-OCT system. Confocal histologic images were obtained from mice killed under light- or dark-adapted conditions.   Results:\n     The OCT image of eyes adapted to room light exhibited significant increases (6.1 ± 0.8 μm, n = 13) in total retina thickness compared to the same eyes after overnight dark adaptation. These light-adapted retinal thickness changes occurred mainly in the outer retina, with the development of a hyporeflective band between the RPE and photoreceptor-tip layers. Histologic analysis revealed a light-evoked elongation between the outer limiting membrane and Bruch's membrane from 45.8 ± 1.7 μm in the dark (n = 5) to 52.1 ± 3.7 μm (n = 5) in the light. Light-adapted retinas showed an increase of actin staining in RPE apical microvilli at the same location as the hyporeflective band observed in OCT images. Elongation of the outer retina could be detected even with brief light exposures, increasing 2.1 ± 0.3 μm after 15 minutes (n = 9), and 4.1 ± 1.0 μm after 2 hours (n = 6). Conversely, dark-adaptation caused outer retinal shortening of 1.4 ± 0.4 μm (n = 7) and 3.0 ± 0.5 μm (n = 8) after 15 minutes and 2 hours, respectively.   Conclusions:\n     Light-adaption induces an increase in the thickness of the outer retina and the appearance of a hyporeflective band in the OCT image. This is consistent with previous reports of light-induced fluid accumulation in the subretinal space.",
 				"issue": "9",
-				"journalAbbreviation": "Investigative Ophthalmology & Visual Science",
+				"journalAbbreviation": "Invest. Ophthalmol. Vis. Sci.",
 				"libraryCatalog": "ARVO journal",
 				"pages": "OCT105-OCT111",
 				"publicationTitle": "Investigative Ophthalmology & Visual Science",
-				"url": "http://dx.doi.org/10.1167/iovs.15-18539",
+				"url": "https://doi.org/10.1167/iovs.15-18539",
 				"volume": "57",
 				"attachments": [
 					{
-						"title": "Investigative Ophthalmology & Visual Science Snapshot",
+						"title": "Invest. Ophthalmol. Vis. Sci. Snapshot",
 						"mimeType": "text/html"
 					},
 					{
-						"title": "Investigative Ophthalmology & Visual Science Full Text PDF",
+						"title": "Invest. Ophthalmol. Vis. Sci. Full Text PDF",
 						"mimeType": "application/pdf"
 					}
 				],
 				"tags": [],
-				"notes": [
-					{
-						"note": "<p>10.1167/iovs.15-18539</p>"
-					}
-				],
+				"notes": [],
 				"seeAlso": []
 			}
 		]
