@@ -9,7 +9,7 @@
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2017-01-03 23:20:12"
+	"lastUpdated": "2020-11-10 11:10:53"
 }
 
 /*
@@ -37,7 +37,7 @@
 
 
 function detectWeb(doc, url) {
-	if (url.indexOf("abstract.cfm") != -1) {
+	if (url.indexOf("abstract.cfm") != -1 || url.indexOf("fulltext.cfm") != -1) {
 		var conference = ZU.xpathText(doc, '//meta[@name="citation_conference_title"]/@content');
 		var journal = ZU.xpathText(doc, '//meta[@name="citation_journal_title"]/@content');
 		if (conference) {
