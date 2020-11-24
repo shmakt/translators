@@ -9,7 +9,7 @@
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2017-01-01 15:19:19"
+	"lastUpdated": "2020-11-19 16:59:01"
 }
 
 /**
@@ -75,7 +75,7 @@ function addByBibTex(doi, tags) {
 function detectWeb(doc, url) {
 	var title = doc.title.toLowerCase();
 
-	if ( url.match(/\/doi\/(abs|full|pdf)\//) ) {
+	if ( url.match(/\/doi\//) ) {
 
 		return 'journalArticle';
 
